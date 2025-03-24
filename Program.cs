@@ -1,76 +1,48 @@
-﻿using BV425_C__DZ.Classes;
-using BV425_C__DZ.Interfaces;
+﻿using BV425_C__DZ.Command.Classes;
+using BV425_C__DZ.Observer.Classes;
+using BV425_C__DZ.Strategy.Classes;
 
-// Singleton
-var single1 = DatabaseConnection.Instance;
-single1.Connect();
-var single2 = DatabaseConnection.Instance;
-single2.Connect();
+//Паттерн "Стратегия" (Strategy)
+//Пример: Калькулятор с различными стратегиями вычислений
+var calculator = new Calculator();
 
-// Проверка, что оба объекта являются одним и тем же экземпляром
-Console.WriteLine($"singleton1 == singleton2: {ReferenceEquals(single1, single2)}\n");
+// Устанавливаем стратегию сложения
+calculator.SetStrategy(new AdditionStrategy());
+Console.WriteLine("Результат сложения: " + calculator.ExecuteCalculation(5, 3));
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Factory Method
-var factoryDocx = new FactoryDocx();
-Document docx1 = factoryDocx.createDocument();
-docx1.printDocument();
+// Устанавливаем стратегию вычитания
+calculator.SetStrategy(new SubtractionStrategy());
+Console.WriteLine("Результат вычитания: " + calculator.ExecuteCalculation(5, 3) + "\n");
 
-var factoryXlsx = new FactoryXlsx();
-Document xlsx1 = factoryXlsx.createDocument();
-xlsx1.printDocument();
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var factoryPptx = new FactoryPptx();
-Document pptx1 = factoryPptx.createDocument();
-pptx1.printDocument();
+//Паттерн "Наблюдатель" (Observer)
+//Пример: Уведомление подписчиков о новостях
+var publisher = new NewsPublisher();
+var subscriber1 = new Subscriber("Подписчик 1");
+var subscriber2 = new Subscriber("Подписчик 2");
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Abstract Factory
-IAirplaneFactory boing = new BoiengFactory();
-Transport transport1 = boing.CreateAirplane();
-transport1.printLabel().printParameters();
+publisher.Attach(subscriber1);
+publisher.Attach(subscriber2);
 
-IAutoFactory supra = new ToyotaFactory();
-Transport transport2 = supra.CreateAuto();
-transport2.printLabel().printParameters();
+publisher.PublishNews("Сегодня солнечная погода!");
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Builder
-// Использование строителя напрямую
-var builder = new ComputerBuilder();
-var customComputer = builder
-    .SetProcessor("AMD Ryzen 7")
-    .SetRAM(64)
-    .SetStorage(2048)
-    .SetGPU("NVIDIA RTX 4090")
-    .SetMotherboard("ASRock X570")
-    .Build();
+publisher.Detach(subscriber1);
 
-customComputer.ShowInfo();
-Console.WriteLine();
+publisher.PublishNews("Завтра ожидается дождь.\n");
 
-// Использование директора
-var director = new ComputerDirector(new ComputerBuilder());
-var gamingComputer = director.BuildGamingComputer();
-gamingComputer.ShowInfo();
-Console.WriteLine();
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var officeComputer = director.BuildOfficeComputer();
-officeComputer.ShowInfo();
+//Паттерн "Команда" (Command)
+//Пример: Управление устройствами через команды
+var light = new Light();
+var turnOnCommand = new TurnOnLightCommand(light);
+var turnOffCommand = new TurnOffLightCommand(light);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-// Prototype
-// Создаем базовый объект автомобиля
-Car originalCar = new Car("Toyota Camry", "Red");
-originalCar.ShowInfo();
+var remote = new RemoteControl();
 
-// Клонируем объект
-Car clonedCar = originalCar.Clone();
-clonedCar.Color = "Blue"; // Изменяем цвет у клонированного объекта
+remote.SetCommand(turnOnCommand);
+remote.PressButton();
 
-Console.WriteLine("\nКлонированный автомобиль:");
-clonedCar.ShowInfo();
-
-// Проверяем, что оригинальный объект не изменился
-Console.WriteLine("\nОригинальный автомобиль:");
-originalCar.ShowInfo();
+remote.SetCommand(turnOffCommand);
+remote.PressButton();
