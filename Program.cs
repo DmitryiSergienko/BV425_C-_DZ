@@ -1,48 +1,70 @@
-﻿using BV425_C__DZ.Command.Classes;
-using BV425_C__DZ.Observer.Classes;
-using BV425_C__DZ.Strategy.Classes;
+﻿using BV425_C__DZ.Iterator.Classes;
+using BV425_C__DZ.State.Classes;
+using BV425_C__DZ.TemplateMethod.Classes;
+using BV425_C__DZ.Mediator.Classes;
 
-//Паттерн "Стратегия" (Strategy)
-//Пример: Калькулятор с различными стратегиями вычислений
-var calculator = new Calculator();
+//Паттерн "Шаблонный метод" (Template Method)
+//Пример: Процесс приготовления напитка
+Console.WriteLine("Готовлю чай:");
+var teaMaker = new TeaMaker();
+teaMaker.PrepareBeverage();
 
-// Устанавливаем стратегию сложения
-calculator.SetStrategy(new AdditionStrategy());
-Console.WriteLine("Результат сложения: " + calculator.ExecuteCalculation(5, 3));
+Console.WriteLine("\nГотовлю кофе:");
+var coffeeMaker = new CoffeeMaker();
+coffeeMaker.PrepareBeverage();
 
-// Устанавливаем стратегию вычитания
-calculator.SetStrategy(new SubtractionStrategy());
-Console.WriteLine("Результат вычитания: " + calculator.ExecuteCalculation(5, 3) + "\n");
+///////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+//Паттерн "Состояние" (State)
+//Пример: Контекст с изменением состояния
+var vendingMachine = new VendingMachine();
 
-//Паттерн "Наблюдатель" (Observer)
-//Пример: Уведомление подписчиков о новостях
-var publisher = new NewsPublisher();
-var subscriber1 = new Subscriber("Подписчик 1");
-var subscriber2 = new Subscriber("Подписчик 2");
+Console.WriteLine("\nТекущее состояние: Без монеты");
+vendingMachine.InsertCoin(); // Вставка монеты
+vendingMachine.SelectDrink(); // Выбор напитка
+vendingMachine.Dispense(); // Выдача напитка
 
-publisher.Attach(subscriber1);
-publisher.Attach(subscriber2);
+Console.WriteLine("\nПовторная попытка:");
+vendingMachine.InsertCoin(); // Вставка монеты
+vendingMachine.EjectCoin(); // Возврат монеты
 
-publisher.PublishNews("Сегодня солнечная погода!");
+///////////////////////////////////////////////////////////////////////////////////
 
-publisher.Detach(subscriber1);
+//Паттерн "Итератор" (Iterator)
+//Пример: Итерация по списку книг
+// Создаем коллекцию книг
+var books = new[] { "Война и мир", "Преступление и наказание", "Мастер и Маргарита" };
+var library = new BookLibrary(books);
 
-publisher.PublishNews("Завтра ожидается дождь.\n");
+// Получаем итератор
+var iterator = library.CreateIterator();
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+// Перебираем книги
+Console.WriteLine("\nСписок книг:");
+while (iterator.HasNext())
+{
+    Console.WriteLine(iterator.Next());
+}
+Console.WriteLine();
 
-//Паттерн "Команда" (Command)
-//Пример: Управление устройствами через команды
-var light = new Light();
-var turnOnCommand = new TurnOnLightCommand(light);
-var turnOffCommand = new TurnOffLightCommand(light);
+///////////////////////////////////////////////////////////////////////////////////
 
-var remote = new RemoteControl();
+//Паттерн "Посредник" (Mediator)
+//Пример: Чат-комната
+// Создаем посредника (чат-комнату)
+var chatRoom = new ChatRoom();
 
-remote.SetCommand(turnOnCommand);
-remote.PressButton();
+// Создаем участников чата
+var user1 = new ChatUser(chatRoom, "Алиса");
+var user2 = new ChatUser(chatRoom, "Боб");
+var user3 = new ChatUser(chatRoom, "Чарли");
 
-remote.SetCommand(turnOffCommand);
-remote.PressButton();
+// Добавляем участников в чат
+chatRoom.AddColleague(user1);
+chatRoom.AddColleague(user2);
+chatRoom.AddColleague(user3);
+
+// Участники отправляют сообщения
+user1.SendMessage("Привет всем!");
+user2.SendMessage("Как дела?");
+user3.SendMessage("Всем привет!");
