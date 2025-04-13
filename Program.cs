@@ -57,7 +57,7 @@ for (int i = 0; i < Y + X - 1; i++) // Количество диагоналей
         Thread.Sleep(500);
         Console.Clear();
     }
-    //Console.WriteLine();
+    // Console.WriteLine();
 
     if (i < minSize - 1) // Нарщиваем диагональ
     {
