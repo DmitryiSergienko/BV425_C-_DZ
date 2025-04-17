@@ -1,80 +1,27 @@
-﻿// Вариант 3: Заполнение матрицы змейкой по диагонали
-int Y = 4;
-int X = 5;
-int[,] matrix = new int[Y, X];
+﻿using BV425_C__DZ.Advertising;
+var data = new Data();
+var advertising = new Advertising();
 
-int minSize = Y;
-int maxSize = X;
-if (X < Y)
-{
-    minSize = X;
-    maxSize = Y;
-}
-int firstLastDiag = minSize - 1;
+var domen1 = new List<string>();
+domen1.Add(data[Domen.ru]);
+advertising.Update(data[Location.Яндекс_Директ], domen1);
 
-int iter = X * Y;
-int iter2 = iter;
-int shiftRight = 0;
-int shiftLeft = 0;
+var domen2 = new List<string>();
+domen2.Add(data[Domen.ru_svrd_revda]);
+domen2.Add(data[Domen.ru_svrd_pervik]);
+advertising.Update(data[Location.Ревдинский_рабочий], domen2);
 
-for (int i = 0; i < Y + X - 1; i++) // Количество диагоналей
-{
-    if (i >= X)
-    {
-        shiftRight++;
-    }
-    if (i >= Y)
-    {
-        shiftLeft++;
-    }
-    for (int j = 0; j < minSize - firstLastDiag; j++) // Длина диагонали
-    {
-        if (i % 2 == 1)
-        {
-            matrix[j + shiftRight, i - j - shiftRight] = iter;
-            //Console.Write(matrix[j + shiftRight, i - j - shiftRight]);
-        }
-        else
-        {
-            matrix[i - j - shiftLeft, j + shiftLeft] = iter;
-            //Console.Write(matrix[i - j - shiftLeft, j + shiftLeft]);
-        }
-        iter--;
-        iter2--;
+var domen3 = new List<string>();
+domen3.Add(data[Domen.ru_msk]);
+domen3.Add(data[Domen.ru_permobl]);
+domen3.Add(data[Domen.ru_chelobl]);
+advertising.Update(data[Location.Газета_уральских_москвичей], domen3);
 
-        for (int y = 0; y < Y; y++)
-        {
-            for (int x = 0; x < X; x++)
-            {
-                if (matrix[y, x] == 0)
-                {
-                    break;
-                }
-                Console.Write(matrix[y, x] - iter2 + "\t");
-            }
-            Console.WriteLine();
-        }
-        Thread.Sleep(500);
-        Console.Clear();
-    }
-    // Console.WriteLine();
+var domen4 = new List<string>();
+domen4.Add(data[Domen.ru_svrd]);
+advertising.Update(data[Location.Крутая_реклама], domen4);
 
-    if (i < minSize - 1) // Нарщиваем диагональ
-    {
-        firstLastDiag--;
-    }
-    else if (i > maxSize - 2) // Уменьшаем диагональ
-    {
-        firstLastDiag++;
-    }
-}
-
-//Console.WriteLine();
-for (int i = 0; i < Y; i++)
-{
-    for (int j = 0; j < X; j++)
-    {
-        Console.Write(matrix[i, j] + "\t");
-    }
-    Console.WriteLine();
-}
+advertising.Search(data[Location.Яндекс_Директ]);
+advertising.Search(data[Location.Ревдинский_рабочий]);
+advertising.Search(data[Location.Газета_уральских_москвичей]);
+advertising.Search(data[Location.Крутая_реклама]);
