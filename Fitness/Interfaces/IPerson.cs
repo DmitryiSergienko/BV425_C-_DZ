@@ -2,7 +2,7 @@
 {
     public interface IPerson
     {
-        public void DisplayInfo();
-        public string GetRole();
+        void DisplayInfo();
+        string GetRole();
     }
 }

@@ -11,7 +11,7 @@ namespace BV425_C__DZ.Fitness.Classes
             Clients = [];
             Trainers = [];
         }
-        public void AddHumanInList<T>(T item)
+        public void AddHumanInList(Person item)
         {
             if (item != null)
             {
@@ -25,23 +25,13 @@ namespace BV425_C__DZ.Fitness.Classes
                 }
             }
         }
-        public void ShowList<T>(List<T> list)
+        public void ShowList<T>(List<T> persons) where T : Person
         {
-            if (list != null)
+            if (persons != null)
             {
-                if (list is List<Trainer> trainers)
+                foreach (var person in persons)
                 {
-                    foreach (var item in trainers)
-                    {
-                        item.DisplayInfo();
-                    }
-                }
-                else if (list is List<Client> clients)
-                {
-                    foreach (var item in clients)
-                    {
-                        item.DisplayInfo();
-                    }
+                    person.DisplayInfo();
                 }
             }
         }
