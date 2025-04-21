@@ -1,28 +1,152 @@
-﻿using BV425_C__DZ.Fitness.Classes;
-using BV425_C__DZ.Fitness.Enums;
+﻿using BV425_C__DZ.Cooking;
 
-var fitness = new FitnessCenter();
-fitness.AddHumanInList(new Trainer("1", new List<string> {
-    $"{TrainerType.CardioTraining}", $"{TrainerType.Yoga}", $"{TrainerType.FunctionalTraining}"
-}, "Чак", "Норрис", "chack@mail.ru", "+791221332324"));
-fitness.AddHumanInList(new Trainer("2", new List<string> {
-    $"{TrainerType.Stretching}", $"{TrainerType.DanceFitness}", $"{TrainerType.Bodybuilding}"
-}, "Майкл", "Джордан", "jordan@mail.ru", "+79231232144"));
-fitness.AddHumanInList(new Trainer("3", new List<string> {
-    $"{TrainerType.CrossFit}", $"{TrainerType.FunctionalTraining}", $"{TrainerType.MartialArts}"
-}, "Джеки", "Чан", "chan@mail.ru", "+79215215244"));
-fitness.AddHumanInList(new Trainer("4", new List<string> {
-    $"{TrainerType.WeightLifting}", $"{TrainerType.Pilates}", $"{TrainerType.Stretching}"
-}, "Сильвестр", "Столовой", "stolovoi@mail.ru", "+79346462326"));
-fitness.AddHumanInList(new Trainer("5", new List<string> {
-    $"{TrainerType.CardioTraining}", $"{TrainerType.Yoga}", $"{TrainerType.Bodybuilding}"
-}, "Шварц", "Терминатов", "terminate@mail.ru", "+79125353464"));
+var recipes = new RecipeCollection();
+recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
+recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
+recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
+recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
 
-fitness.AddHumanInList(new Client("6", MembershipType.Yearly, "Челик", "Бибов", "chelik@mail.ru", "+79528821212"));
-fitness.AddHumanInList(new Client("7", MembershipType.Monthly, "Биба", "Бобович", "biba@mail.ru", "+79123456436"));
-fitness.AddHumanInList(new Client("8", MembershipType.DropIn, "Боба", "Бибович", "boba@mail.ru", "+79346344366"));
-fitness.AddHumanInList(new Client("9", MembershipType.Monthly, "Карл", "Маркс", "karl@mail.ru", "+79658997656"));
-fitness.AddHumanInList(new Client("10", MembershipType.Yearly, "Миклуха", "Маклай", "mikle@mail.ru", "+79021401042"));
+Console.WriteLine("Отображение всех рецептов:");
+try
+{
+    for (int i = 0; i < recipes.Count; i++)
+    {
+        Console.WriteLine(recipes[i].ToString());
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
 
-fitness.ShowList(fitness.Trainers);
-fitness.ShowList(fitness.Clients);
+Console.WriteLine("Удалили \"Пельмени\" из списка:");
+recipes.RemoveRecipe("Пельмени", 517);
+try
+{
+    for (int i = 0; i < recipes.Count; i++)
+    {
+        Console.WriteLine(recipes[i].ToString());
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
+
+Console.WriteLine("Поиск рецептов по автору \"Иван Иванович\":");
+try
+{
+    var authorSearch = recipes.FindRecipesByAuthor("Иван Иванович");
+    for (int i = 0; i < authorSearch.Count(); i++)
+    {
+        Console.WriteLine(authorSearch[i].ToString());
+    }
+}
+catch(Exception ex)
+{
+    Console.WriteLine(ex.ToString() );
+}
+
+Console.WriteLine("Поиск рецептов по кухне \"Французская\":");
+try
+{
+    var сuisineSearch = recipes.GetRecipesByCuisine("Французская");
+    for (int i = 0; i < сuisineSearch.Count(); i++)
+    {
+        Console.WriteLine(сuisineSearch[i].ToString());
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Console.WriteLine("Демонстрация стандартного исключения выхода за границу массива,\n" +
+    "обаботка исключения \"IndexOutOfRangeException\": ");
+try
+{
+    Console.WriteLine(recipes[recipes.Count].ToString());
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
+
+Console.WriteLine("Демонстрация стандартного исключения с проверкой на \"null\",\n" +
+    "обаботка исключения \"ArgumentNullException\": ");
+try
+{
+    var authorSearch = recipes.FindRecipesByAuthor("ФФФ");
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
+
+Console.WriteLine("Демонстрация пользовательского исключения с отсутсвием рецепта,\n" +
+    "обаботка исключения \"RecipeNotFoundException\": ");
+try
+{
+    var сuisineSearch = recipes.GetRecipesByCuisine("ААА");
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Console.WriteLine("Группировка рецептов по году:");
+try
+{
+    var groupByYear = recipes.GroupByYear();
+    Extension.ShowDictionary(recipes, groupByYear);
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString() + "\n");
+}
+
+Console.WriteLine("Xранение рецептов по авторам:");
+var groupByAuthor = new Dictionary<string, List<Recipe>>();
+foreach (Recipe recipe in recipes.Recipes)
+{
+    if (groupByAuthor.ContainsKey(recipe.Author))
+    {
+        groupByAuthor[recipe.Author].Add(recipe);
+    }
+    else
+    {
+        var tempRecipe = new List<Recipe> { recipe };
+        groupByAuthor.Add(recipe.Author, tempRecipe);
+    }
+}
+Extension.ShowDictionary(recipes, groupByAuthor);
+
+recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
+recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
+recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
+recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
+recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
+recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
+recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
+recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
+recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
+
+Console.WriteLine("Xранение уникальных рецептов:");
+var uniqueRecipe = new HashSet<string>();
+foreach (var recipe in recipes.Recipes)
+{
+    uniqueRecipe.Add(recipe.ToString());
+}
+foreach (var item in uniqueRecipe)
+{
+    Console.WriteLine(item.ToString());
+}
