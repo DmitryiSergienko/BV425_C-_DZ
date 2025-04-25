@@ -1,152 +1,80 @@
-﻿using BV425_C__DZ.Cooking;
+﻿using C__Praktika4.Classes;
+using System.Diagnostics.SymbolStore;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
-var recipes = new RecipeCollection();
-recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
-recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
-recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
-recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
-
-Console.WriteLine("Отображение всех рецептов:");
-try
+//  Задание 1 и 2
+Console.WriteLine("Задание 1 и 2:");
+Student student = new()
 {
-    for (int i = 0; i < recipes.Count; i++)
+    Name = "Дмитрий",
+    Age = 32,
+    Grades = { 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+};
+
+var jsonSerializerOptions = new JsonSerializerOptions
+{
+    WriteIndented = true,
+    Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic)
+};
+
+var jsonStudent = JsonSerializer.Serialize(student, jsonSerializerOptions);
+Console.WriteLine("Сериализация объекта:\n" + jsonStudent);
+string pathStudent = "D:\\Testing\\Students\\students.txt";
+File.WriteAllText(pathStudent, jsonStudent);
+
+var jsonStudentFromFile = File.ReadAllText(pathStudent);
+var studentFromFile = JsonSerializer.Deserialize<Student>(jsonStudentFromFile);
+Console.WriteLine("\nДесериализация объекта:\n" + jsonStudentFromFile);
+
+Console.WriteLine("\nПросто ToString():\n" + student.ToString());
+
+// Задание 3 и 4
+Console.WriteLine("\nЗадание 3 и 4:");
+Book book = new()
+{
+    Title = "Чек Пук",
+    Author = "Витька Упоротов"
+};
+
+var jsonBook = JsonSerializer.Serialize(book, jsonSerializerOptions);
+Console.WriteLine("Сериализация объекта:\n" + jsonBook);
+string pathBook = "D:\\Testing\\Books\\book.txt";
+File.WriteAllText(pathBook, jsonBook);
+
+var jsonBookFromFile = File.ReadAllText(pathBook);
+var bookFromFile = JsonSerializer.Deserialize<Book>(jsonBookFromFile);
+Console.WriteLine("\nДесериализация объекта:\n" + jsonBookFromFile);
+
+Console.WriteLine("\nПросто ToString():\n" + book.ToString());
+
+List<Book> books = new()
+{
+    new()
     {
-        Console.WriteLine(recipes[i].ToString());
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-Console.WriteLine("Удалили \"Пельмени\" из списка:");
-recipes.RemoveRecipe("Пельмени", 517);
-try
-{
-    for (int i = 0; i < recipes.Count; i++)
+        Title = "Гамлет",
+    Author = "Гомер Борисович"
+    },
+    new()
     {
-        Console.WriteLine(recipes[i].ToString());
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-Console.WriteLine("Поиск рецептов по автору \"Иван Иванович\":");
-try
-{
-    var authorSearch = recipes.FindRecipesByAuthor("Иван Иванович");
-    for (int i = 0; i < authorSearch.Count(); i++)
+        Title = "Титуник",
+    Author = "Чич Апа"
+    },
+    new()
     {
-        Console.WriteLine(authorSearch[i].ToString());
+        Title = "Кил Бил",
+    Author = "Тарантино"
     }
-}
-catch(Exception ex)
-{
-    Console.WriteLine(ex.ToString() );
-}
+};
 
-Console.WriteLine("Поиск рецептов по кухне \"Французская\":");
-try
-{
-    var сuisineSearch = recipes.GetRecipesByCuisine("Французская");
-    for (int i = 0; i < сuisineSearch.Count(); i++)
-    {
-        Console.WriteLine(сuisineSearch[i].ToString());
-    }
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString());
-}
+var jsonBooks = JsonSerializer.Serialize(books, jsonSerializerOptions);
+Console.WriteLine("\nСериализация объектов:\n" + jsonBooks);
+string pathBooks = "D:\\Testing\\Books\\books.txt";
+File.WriteAllText(pathBooks, jsonBooks);
 
-///////////////////////////////////////////////////////////////////////////////////
+Console.WriteLine("\nВывод на консоль содержимого из файла:\n" + File.ReadAllText(pathBooks));
 
-Console.WriteLine("Демонстрация стандартного исключения выхода за границу массива,\n" +
-    "обаботка исключения \"IndexOutOfRangeException\": ");
-try
-{
-    Console.WriteLine(recipes[recipes.Count].ToString());
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-Console.WriteLine("Демонстрация стандартного исключения с проверкой на \"null\",\n" +
-    "обаботка исключения \"ArgumentNullException\": ");
-try
-{
-    var authorSearch = recipes.FindRecipesByAuthor("ФФФ");
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-Console.WriteLine("Демонстрация пользовательского исключения с отсутсвием рецепта,\n" +
-    "обаботка исключения \"RecipeNotFoundException\": ");
-try
-{
-    var сuisineSearch = recipes.GetRecipesByCuisine("ААА");
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-Console.WriteLine("Группировка рецептов по году:");
-try
-{
-    var groupByYear = recipes.GroupByYear();
-    Extension.ShowDictionary(recipes, groupByYear);
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex.ToString() + "\n");
-}
-
-Console.WriteLine("Xранение рецептов по авторам:");
-var groupByAuthor = new Dictionary<string, List<Recipe>>();
-foreach (Recipe recipe in recipes.Recipes)
-{
-    if (groupByAuthor.ContainsKey(recipe.Author))
-    {
-        groupByAuthor[recipe.Author].Add(recipe);
-    }
-    else
-    {
-        var tempRecipe = new List<Recipe> { recipe };
-        groupByAuthor.Add(recipe.Author, tempRecipe);
-    }
-}
-Extension.ShowDictionary(recipes, groupByAuthor);
-
-recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Яичница", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
-recipes.AddRecipe(new Recipe("Харчо", "Майк Тайсон", "Грузинская", 1500));
-recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
-recipes.AddRecipe(new Recipe("Борщ", "Иван Иванович", "Русская", 517));
-recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
-recipes.AddRecipe(new Recipe("Пельмени", "Джеки Чан", "Китайская", 1000));
-recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Оливье", "Жан Пьер", "Французская", 1854));
-recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
-recipes.AddRecipe(new Recipe("Блины", "Иван Иванович", "Русская", 517));
-
-Console.WriteLine("Xранение уникальных рецептов:");
-var uniqueRecipe = new HashSet<string>();
-foreach (var recipe in recipes.Recipes)
-{
-    uniqueRecipe.Add(recipe.ToString());
-}
-foreach (var item in uniqueRecipe)
-{
-    Console.WriteLine(item.ToString());
-}
+var jsonBooksFromFile = File.ReadAllText(pathBooks);
+var booksFromFile = JsonSerializer.Deserialize<List<Book>>(jsonBooksFromFile);
+Console.WriteLine("\nДесериализация объектов:\n" + jsonBooksFromFile);
