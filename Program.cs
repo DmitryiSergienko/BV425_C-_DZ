@@ -1,80 +1,82 @@
-﻿using C__Praktika4.Classes;
-using System.Diagnostics.SymbolStore;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
+﻿using BV425_C__DZ.Новая_папка;
 
-//  Задание 1 и 2
-Console.WriteLine("Задание 1 и 2:");
-Student student = new()
-{
-    Name = "Дмитрий",
-    Age = 32,
-    Grades = { 4, 5, 6, 7, 8, 9, 10, 11, 12 }
-};
-
-var jsonSerializerOptions = new JsonSerializerOptions
-{
-    WriteIndented = true,
-    Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic)
-};
-
-var jsonStudent = JsonSerializer.Serialize(student, jsonSerializerOptions);
-Console.WriteLine("Сериализация объекта:\n" + jsonStudent);
-string pathStudent = "D:\\Testing\\Students\\students.txt";
-File.WriteAllText(pathStudent, jsonStudent);
-
-var jsonStudentFromFile = File.ReadAllText(pathStudent);
-var studentFromFile = JsonSerializer.Deserialize<Student>(jsonStudentFromFile);
-Console.WriteLine("\nДесериализация объекта:\n" + jsonStudentFromFile);
-
-Console.WriteLine("\nПросто ToString():\n" + student.ToString());
-
-// Задание 3 и 4
-Console.WriteLine("\nЗадание 3 и 4:");
-Book book = new()
-{
-    Title = "Чек Пук",
-    Author = "Витька Упоротов"
-};
-
-var jsonBook = JsonSerializer.Serialize(book, jsonSerializerOptions);
-Console.WriteLine("Сериализация объекта:\n" + jsonBook);
-string pathBook = "D:\\Testing\\Books\\book.txt";
-File.WriteAllText(pathBook, jsonBook);
-
-var jsonBookFromFile = File.ReadAllText(pathBook);
-var bookFromFile = JsonSerializer.Deserialize<Book>(jsonBookFromFile);
-Console.WriteLine("\nДесериализация объекта:\n" + jsonBookFromFile);
-
-Console.WriteLine("\nПросто ToString():\n" + book.ToString());
-
-List<Book> books = new()
+List<Student> students = new()
 {
     new()
     {
-        Title = "Гамлет",
-    Author = "Гомер Борисович"
+        Name = "Витька",
+        Age = 18,
+        GPA = 5.4
     },
     new()
     {
-        Title = "Титуник",
-    Author = "Чич Апа"
+        Name = "Жорик",
+        Age = 21,
+        GPA = 4.5
     },
     new()
     {
-        Title = "Кил Бил",
-    Author = "Тарантино"
+        Name = "Борян",
+        Age = 22,
+        GPA = 5.0
+    },
+    new()
+    {
+        Name = "Ксюха",
+        Age = 21,
+        GPA = 3.6
+    },
+    new()
+    {
+        Name = "Лена",
+        Age = 17,
+        GPA = 5.2
+    },
+    new()
+    {
+        Name = "Маруся",
+        Age = 20,
+        GPA = 4.1
+    },
+    new()
+    {
+        Name = "Ярослав",
+        Age = 23,
+        GPA = 1.9
+    },
+    new()
+    {
+        Name = "Федя",
+        Age = 19,
+        GPA = 2.8
+    },
+    new()
+    {
+        Name = "Чича",
+        Age = 21,
+        GPA = 4.0
+    },
+    new()
+    {
+        Name = "Дося",
+        Age = 28,
+        GPA = 3.5
     }
 };
 
-var jsonBooks = JsonSerializer.Serialize(books, jsonSerializerOptions);
-Console.WriteLine("\nСериализация объектов:\n" + jsonBooks);
-string pathBooks = "D:\\Testing\\Books\\books.txt";
-File.WriteAllText(pathBooks, jsonBooks);
+Console.WriteLine("LINQ method:\n");
+var method = students.Where(x => x.GPA > 3.5).OrderBy(x => x.GPA);
+foreach (var student in method)
+{
+    Console.WriteLine(student.ToString());
+}
 
-Console.WriteLine("\nВывод на консоль содержимого из файла:\n" + File.ReadAllText(pathBooks));
-
-var jsonBooksFromFile = File.ReadAllText(pathBooks);
-var booksFromFile = JsonSerializer.Deserialize<List<Book>>(jsonBooksFromFile);
-Console.WriteLine("\nДесериализация объектов:\n" + jsonBooksFromFile);
+Console.WriteLine("\nLINQ query:\n");
+var query = from student in students
+            where student.GPA > 3.5
+            orderby student.GPA
+            select student;
+foreach (var student in query)
+{
+    Console.WriteLine(student.ToString());
+}
