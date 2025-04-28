@@ -1,180 +1,345 @@
-﻿using BV425_C__DZ.Classes;
-using System.Diagnostics;
-using System.Xml.Linq;
+﻿using System.Numerics;
+using System.Text;
 
-// Задача #1
-Console.WriteLine("Задача #1:\n");
-List<Student> students = new()
+string mainCatalog = "D:\\Testing";
+string subCatalog1 = mainCatalog + "\\Folder1";
+string subCatalog2 = mainCatalog + "\\Folder2";
+try
 {
-    new()
+    if (!Directory.Exists(mainCatalog))                                 // Задание 1.2
     {
-        Name = "Alice",
-        Score = 90
-    },
-    new()
-    {
-        Name = "Bob",
-        Score = 80
-    },
-    new()
-    {
-        Name = "Charlie",
-        Score = 88
-    },
-    new()
-    {
-        Name = "David",
-        Score = 82
-    },
-};
-
-Console.WriteLine("LINQ method:\n");
-var methodStudent = students.Where(x => x.Score > 85).OrderBy(x => x.Score);
-foreach (var student in methodStudent)
-{
-    Console.WriteLine(student.ToString());
-}
-
-Console.WriteLine("\nLINQ query:\n");
-var queryStudent = from student in students
-            where student.Score > 85
-            orderby student.Score
-            select student;
-foreach (var student in queryStudent)
-{
-    Console.WriteLine(student.ToString());
-}
-
-// Задача #2
-Console.WriteLine("\nЗадача #2:\n");
-List<Book> books = new()
-{
-    new Book { Title = "1984" },
-    new Book { Title = "To Kill a Mockingbird" },
-    new Book { Title = "The Great Gatsby" }
-};
-
-Console.WriteLine("LINQ method:\n");
-var methodBooks = books.OrderBy(x => x.Title);
-foreach (var book in methodBooks)
-{
-    Console.WriteLine(book.Title);
-}
-
-Console.WriteLine("\nLINQ query:\n");
-var queryBooks = from book in books
-                 orderby book.Title
-                 select book;
-foreach (var book in queryBooks)
-{
-    Console.WriteLine(book.Title);
-}
-
-// Задача #3
-Console.WriteLine("\nЗадача #3:\n");
-var products = new List<Product>
-{
- new Product { Name = "Apple", Category = "Fruits" },
- new Product { Name = "Carrot", Category = "Vegetables" },
- new Product { Name = "Banana", Category = "Fruits" },
- new Product { Name = "Broccoli", Category = "Vegetables" }
-};
-
-Console.WriteLine("LINQ method:\n");
-var productsMethod = products.GroupBy(x => x.Category).Select(group => new
-{
-    Category = group.Key,
-    Name = group.ToList()
-});
-foreach (var category in productsMethod)
-{
-    Console.WriteLine($"Category: {category.Category}");
-
-    foreach (var product in category.Name)
-    {
-        Console.WriteLine($"  - {product.Name}");
+        Directory.CreateDirectory(mainCatalog);                         // Задание 1.1
+        Console.WriteLine($"Основной каталог {mainCatalog} создан!");
     }
-}
+    Console.WriteLine("Задание 1.2 - Пройдена проверка на существование каталога!\n");
 
-Console.WriteLine("\nLINQ query:\n");
-var productsQuery = from product in products
-                    group product by product.Category into categoryGroup
-                    select new {
-                    Category = categoryGroup.Key,
-                    Name = categoryGroup.ToList()
-};
-foreach (var category in productsMethod)
-{
-    Console.WriteLine($"Category: {category.Category}");
+    Directory.CreateDirectory(subCatalog1);                             // Задание 1.1
+    Console.WriteLine($"Подкаталог {subCatalog1} создан!");
+    Directory.CreateDirectory(subCatalog2);                             // Задание 1.1
+    Console.WriteLine($"Подкаталог {subCatalog2} создан!");
+    Console.WriteLine("Задание 1.1 - Каталоги добавлены!\n");
 
-    foreach (var product in category.Name)
+    DeleteCatalog(mainCatalog);                                         // Задание 1.3
+    void DeleteCatalog(string catalogName)
     {
-        Console.WriteLine($"  - {product.Name}");
+        Directory.Delete(catalogName, true);
     }
+    Console.WriteLine("Задание 1.3 - Принудительно удалена папка с содержимым!\n");
+}
+catch (DirectoryNotFoundException ex)
+{
+    Console.WriteLine($"Ошибка: Каталог не найден. Подробности: {ex.Message}");
+}
+catch (UnauthorizedAccessException ex)
+{
+    Console.WriteLine($"Ошибка: Нет прав доступа. Подробности: {ex.Message}");
+}
+catch (IOException ex)
+{
+    Console.WriteLine($"Ошибка ввода-вывода. Подробности: {ex.Message}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Неизвестная ошибка. Подробности: {ex.Message}");
 }
 
-// Задача #4
-Console.WriteLine("\nЗадача #4:\n");
-var schoolkids = new List<Schoolkid>
+////////////////////////////////////////////////////////////////////////////////////////
+string file = subCatalog1 + "\\Test.txt";
+try
 {
- new Schoolkid { Id = 1, Name = "Alice" },
- new Schoolkid { Id = 2, Name = "Bob" }
-};
-var grades = new List<Grade>
-{
- new Grade { SchoolkidId = 1, Subject = "Math", LetterGrade = 'A' },
- new Grade { SchoolkidId = 2, Subject = "Math", LetterGrade = 'B' },
- new Grade { SchoolkidId = 1, Subject = "Science", LetterGrade = 'A' }
-};
+    Directory.CreateDirectory(subCatalog1);
+    File.WriteAllText(file, "Hello\nworld!");      // Задание 2.1
 
-Console.WriteLine("LINQ method:\n");
-var methodSchoolkidsAndGrades = schoolkids.Join
-    (
-        grades,
-        schoolkid => schoolkid.Id,      // Ключ для студентов
-        grade => grade.SchoolkidId,     // Ключ для оценок
-        (schoolkid, grade) => new       // Результат объединения
+    Console.WriteLine(File.ReadAllText(file));
+    Console.WriteLine("Задание 2.1 - Вывод всего текста целиком!\n");
+
+    int iter = 1;
+    foreach (var catalog in File.ReadLines(file))    // Задание 2.2
+    {
+        Console.WriteLine("Строка: " + iter + " " + catalog);
+        iter++;
+    }
+    Console.WriteLine("Задание 2.2 - Вывод текста построчно!\n");
+
+    Directory.CreateDirectory(subCatalog2);    // Задание 2.3
+    string copyFile = subCatalog2 + "\\Test(copy).txt";
+    string moveFile = subCatalog2 + "\\Test(move).txt";
+
+    File.Copy(file, copyFile);
+    File.Move(file, moveFile);
+
+    Console.WriteLine("Задание 2.3 - Файл скопирован и перемещен!\n");
+}
+catch (FileNotFoundException ex)
+{
+    Console.WriteLine($"Ошибка: Файл не найден. Подробности: {ex.Message}");
+}
+catch (IOException ex)
+{
+    Console.WriteLine($"Ошибка ввода-вывода. Подробности: {ex.Message}");
+}
+catch (UnauthorizedAccessException ex)
+{
+    Console.WriteLine($"Ошибка: Нет прав доступа. Подробности: {ex.Message}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Неизвестная ошибка. Подробности: {ex.Message}");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+try
+{
+    using (FileStream fileStream = new FileStream(file, FileMode.Create, FileAccess.Write))    // Задание 3.1
+    {
+        using (StreamWriter writer = new StreamWriter(fileStream))
         {
-            schoolkidName = schoolkid.Name,
-            letterGrade = grade.LetterGrade,
-            subject = grade.Subject
+            writer.WriteLine("1 строка текста");
+            writer.WriteLine("2 строка текста");
+            writer.WriteLine("3 строка текста");
+
+            Console.WriteLine("Задание 3.1 - Текст добавлен в файл!\n");
         }
-    );
-foreach( var schoolkid in methodSchoolkidsAndGrades)
+    }
+
+    using (FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))    // Задание 3.2
+    {
+        using (StreamReader reader = new StreamReader(fileStream))
+        {
+            string line;
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                Console.WriteLine(line);
+            }
+
+            Console.WriteLine("Задание 3.2 - Текст отображен в консоль построчно!\n");
+        }
+    }
+}
+catch (FileNotFoundException ex)
 {
-    Console.WriteLine(schoolkid);
+    Console.WriteLine($"Ошибка: Файл не найден. Подробности: {ex.Message}");
+}
+catch (IOException ex)
+{
+    Console.WriteLine($"Ошибка ввода-вывода. Подробности: {ex.Message}");
+}
+catch (UnauthorizedAccessException ex)
+{
+    Console.WriteLine($"Ошибка: Нет прав доступа. Подробности: {ex.Message}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Неизвестная ошибка. Подробности: {ex.Message}");
 }
 
-Console.WriteLine("\nLINQ query:\n");
-var querySchoolkidsAndGrades = from schoolkid in schoolkids
-                               join grade in grades
-                               on schoolkid.Id equals grade.SchoolkidId into schoolkidGradeGroup
-                               from grade in schoolkidGradeGroup.DefaultIfEmpty()
-                               select new
-                               {
-                                   sschoolkidName = schoolkid.Name,
-                                   letterGrade = grade.LetterGrade,
-                                   subject = grade.Subject
-                               };
-foreach (var schoolkid in querySchoolkidsAndGrades)
+////////////////////////////////////////////////////////////////////////////////////////
+Console.WriteLine("\n\n\tНажмите 'Enter' для продолжения...");
+Console.ReadLine();
+Console.Clear();
+Menu();
+Directory.Delete(mainCatalog, true);
+void Menu()
 {
-    Console.WriteLine(schoolkid);
+    string menuPath = ".\\menu.txt";
+    var menu = ReadTextFromFile(menuPath);
+    int position = 0;
+    int oldPosition = 0;
+    char icon = '~';
+    char iconPoint = '*';
+    bool closeProgramm = false;
+    while (true)
+    {
+        menu[4 + position] = ChangeIcon(icon, menu[4 + position]);
+        if (oldPosition != position)
+        {
+            menu[4 + oldPosition] = ChangeIcon(iconPoint, menu[4 + oldPosition]);
+            oldPosition = position;
+        }
+        Console.Clear();
+        ShowList(menu);
+
+        var key = Console.ReadKey(intercept: true);
+        if (key.Key == ConsoleKey.Enter)
+        {
+            ChangeFunc(position, ref closeProgramm);
+        }
+        else
+        {
+            position = ChangeMenuItem(position, key);
+        }
+        if (closeProgramm)
+        {
+            Console.Clear();
+            Console.WriteLine("\n\n\n\tХорошего дня!\n\n\n");
+            break;
+        }
+    }
+}
+void WriteTextInFile(string path)
+{
+    Console.WriteLine("Введите текст (для завершения ввода оставьте строку пустой):");
+    List<string> text = new List<string>();
+
+    while (true)
+    {
+        string line = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            break;
+        }
+        text.Add(line);
+    }
+
+    File.AppendAllLines(path, text);
+}
+List<string> ReadTextFromFile(string path)
+{
+    List<string> strings = [.. File.ReadAllLines(path)]; // Упрощенная запись из файла в список с инициализацией
+    return strings;
+}
+void ShowList<T>(List<T> list)
+{
+    foreach (var row in list)
+    {
+        Console.WriteLine(row);
+    }
+}
+int ChangeMenuItem(int position, ConsoleKeyInfo key)
+{
+    switch (key.Key)
+    {
+        case ConsoleKey.UpArrow:
+            {
+                if (position > 0)
+                {
+                    return --position;
+                }
+                else
+                {
+                    return position;
+                }
+            }
+        case ConsoleKey.DownArrow:
+            {
+                if (position < 3)
+                {
+                    return ++position;
+                }
+                else
+                {
+                    return position;
+                }
+            }
+        default:
+            {
+                return position;
+            }
+    }
+}
+string ChangeIcon(char icon, string line)
+{
+    StringBuilder sb = new StringBuilder(line);
+    sb[8] = icon;
+    return line = sb.ToString();
+}
+void ChangeFunc(int position, ref bool closeProgramm)
+{
+    switch (position)
+    {
+        case (int)Func.WriteTextInFile:
+            {
+                ItemWriteText();
+                break;
+            }
+        case (int)Func.ReadTextFromFile:
+            {
+                ItemReadText();
+                break;
+            }
+        case (int)Func.RemoveTextInFile:
+            {
+                ItemRemoveText();
+                break;
+            }
+        case (int)Func.CloseProgramm:
+            {
+                closeProgramm = true;
+                break;
+            }
+        default:
+            {
+                break;
+            }
+    }
+}
+void ItemWriteText()
+{
+    try
+    {
+        Console.Write("Введите полный путь к файлу: ");
+        var path = Console.ReadLine();
+        if (!File.Exists(path))
+        {
+            File.Create(path).Close();
+        }
+        WriteTextInFile(path);
+        Console.Clear();
+        Console.WriteLine($"Текст успешно записан в файл: {path}");
+        Console.ReadKey();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
+        Console.ReadKey();
+    }
+}
+void ItemReadText()
+{
+    try
+    {
+        Console.Write("Введите полный путь к файлу: ");
+        var path = Console.ReadLine();
+        var file = ReadTextFromFile(path);
+        if (file != null)
+        {
+            Console.Clear();
+            foreach (var item in file)
+            {
+                Console.WriteLine(item);
+            }
+            Console.ReadKey();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
+        Console.ReadKey();
+    }
+}
+void ItemRemoveText()
+{
+    try
+    {
+        Console.Write("Введите полный путь к файлу: ");
+        var path = Console.ReadLine();
+        File.Delete(path);
+        Console.Clear();
+        Console.WriteLine($"Успешно удален файл: {path}");
+        Console.ReadKey();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
+        Console.ReadKey();
+    }
 }
 
-// Задача #5
-Console.WriteLine("\nЗадача #5:\n");
-var orders = new List<Order>
+enum Func
 {
-    new Order { Amount = 150.00m },
-    new Order { Amount = 200.00m },
-    new Order { Amount = 75.00m }
-};
-
-Console.WriteLine("LINQ method:\n");
-var methodSumOrders = orders.Sum(o => o.Amount);
-Console.WriteLine(methodSumOrders);
-
-Console.WriteLine("\nLINQ query:\n");
-var querySumOrders = (from order in orders
-                      select order.Amount).Sum();
-Console.WriteLine(querySumOrders);
+    WriteTextInFile,
+    ReadTextFromFile,
+    RemoveTextInFile,
+    CloseProgramm
+}
