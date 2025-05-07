@@ -1,42 +1,57 @@
-﻿using BV425_C__DZ.Classes;
-using System.Collections.Generic;
+﻿using BV425_C__DZ.Model;
+using BV425_C__DZ.Commands;
+using BV425_C__DZ.Commands.Interfaces;
+using NLog;
+using NLog.Config;
+using NLog.Targets; 
 
-int a = 3;
-int b = 4;
+var pathLog = "log.txt";
+var loggingConfiguration = new LoggingConfiguration();
 
-Operation operationAdd;
-Operation operationSubtract;
-Operation operationMultiply;
-
-operationAdd = Add;
-Console.WriteLine($"Сумма:       {a} + {b} = " + operationAdd.Invoke(3, 4));
-operationSubtract = Subtract;
-Console.WriteLine($"Вычитание:   {a} - {b} = " + operationSubtract.Invoke(3, 4));
-operationMultiply = Multiply;
-Console.WriteLine($"Умножение:   {a} * {b} = " + operationMultiply.Invoke(3, 4));
-
-int Add(int a, int b)
+var fileTarget = new FileTarget
 {
-    return a + b;
-}
-int Subtract(int a, int b)
+    FileName = pathLog,
+    Layout = @"${longdate}|${level:uppercase=true}|${message} ${exception}"
+};
+
+loggingConfiguration.AddRule(LogLevel.Info, LogLevel.Error, fileTarget);
+
+LogManager.Configuration = loggingConfiguration;
+
+var logger = LogManager.GetCurrentClassLogger();
+
+//var fileLogger = new FileLogger(pathLog);
+
+var tasks = new Dictionary<int, TaskToDo>();
+
+var commandByNumberCommand = new Dictionary<string, ITaskCommand>
 {
-    return a - b;
-}
-int Multiply(int a, int b)
+    { "1", new AddTaskCommand(tasks, logger) },
+    { "2", new RemoveTaskCommand(tasks, logger) },
+    { "3", new UpdateTaskCommand(tasks, logger) },
+    { "4", new ShowTasksCommand(tasks, logger.Info) },
+    { "5", new ChangeStatusTaskCommand(tasks, logger) }
+};
+
+string numberCommand = null;
+do
 {
-    return a * b;
+    Console.Clear();
+    Console.WriteLine(@"Команды:
+    1 - Добавить таску
+    2 - Удалить таску
+    3 - Обновить таску
+    4 - Показать информацию по таскам
+    5 - Поменять стаутус у таски
+    6 - Выход
+");
+
+    numberCommand = Console.ReadLine();
+
+    if (commandByNumberCommand.TryGetValue(numberCommand, out ITaskCommand command))
+    {
+        command.Execute();
+    }
+
 }
-
-/////////////////////////////////////////////////////////////////////////
-
-var numbers = new List<int> { 1, 2, 3, 4, 5 };
-
-// Лямбда-выражение: умножение каждого элемента на 2
-List<int> doubledNumbers = numbers.ModifyList(x => x * 2);
-
-// Вывод результата
-Console.WriteLine("\nИсходный список:\t\t" + string.Join(", ", numbers));
-Console.WriteLine("Модифицированный список:\t" + string.Join(", ", doubledNumbers));
-
-delegate int Operation(int a, int b);
+while (numberCommand != "6");
