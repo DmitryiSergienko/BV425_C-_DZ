@@ -1,15 +1,27 @@
-﻿var list = new LinkedList<string>();
-list.AddFirst("Один");
-list.AddLast("Два");
-list.AddLast("Три");
-list.AddLast("Четыре");
-list.AddLast("Пять");
-list.AddFirst("Ноль");
+﻿var stack = new Stack<string>();
+stack.Push("Раз");
+stack.Push("Два");
+stack.Push("Три");
 
-foreach (var item in list)
+Console.WriteLine(stack.Pop());
+Console.WriteLine(stack.Peek());
+Console.WriteLine(stack.Pop());
+Console.WriteLine(stack.Pop());
+
+try
 {
-    Console.WriteLine(item);
+    Console.WriteLine(stack.Pop()); // Попытка извлечь из пустого стека
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message); // "Стек пуст"
 }
 
-Console.WriteLine("\n" + list.Contains("Два"));
-Console.WriteLine(list.Contains("Семь"));
+try
+{
+    Console.WriteLine(stack.Peek()); // Попытка отобразить из пустого стека
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine(ex.Message); // "Стек пуст"
+}
