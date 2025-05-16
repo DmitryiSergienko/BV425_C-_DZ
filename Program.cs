@@ -1,27 +1,18 @@
-﻿var stack = new Stack<string>();
-stack.Push("Раз");
-stack.Push("Два");
-stack.Push("Три");
+﻿using BV425_C__DZ.Classes;
 
-Console.WriteLine(stack.Pop());
-Console.WriteLine(stack.Peek());
-Console.WriteLine(stack.Pop());
-Console.WriteLine(stack.Pop());
+var strings =
+    """
+        sub main
+    
+        set a 1
+        call foo
+        print a
 
-try
-{
-    Console.WriteLine(stack.Pop()); // Попытка извлечь из пустого стека
-}
-catch (InvalidOperationException ex)
-{
-    Console.WriteLine(ex.Message); // "Стек пуст"
-}
 
-try
-{
-    Console.WriteLine(stack.Peek()); // Попытка отобразить из пустого стека
-}
-catch (InvalidOperationException ex)
-{
-    Console.WriteLine(ex.Message); // "Стек пуст"
-}
+        sub foo
+        set a 2
+    """;
+
+var interpretator = new Content(strings);
+
+interpretator.Show();
